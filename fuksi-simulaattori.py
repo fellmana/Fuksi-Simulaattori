@@ -31,7 +31,7 @@ def fps_counter():
 def initialize_simulation():
     campus = Kumpula()
     targets = campus.targets
-    n_fuksi = 1000
+    n_fuksi = 200
     n_opiskelija = 20 
     n_proffa = 20
     people = []
