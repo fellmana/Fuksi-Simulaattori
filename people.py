@@ -45,7 +45,7 @@ class Person:
                     self.vel[1] *= -1
                 self.pos = previous
                 self.can_collide = False
-                self.collsion_cooldown = 40
+                self.collsion_cooldown = 5
                 break
 
 
@@ -85,7 +85,7 @@ class Person:
 
 class Fuksi(Person):
     identity="Fuksi"
-    speed = 1.0
+    speed = 1.5
 
     def __init__(self, pos,target,vel=None,major="Fysiikka"):
         super().__init__(pos,target,vel=vel)

@@ -4,11 +4,13 @@ from people import Fuksi,Proffa,Opiskelija,is_inside_rectangle
 from maps import Kumpula,Areena
 import numpy as np
 
+
 #--------------------------------
 # Initialize pygame and constants
 #--------------------------------
-SCREEN_WIDTH = 1440
-SCREEN_HEIGHT= 1000
+SCREEN_WIDTH  = 1440
+SCREEN_HEIGHT = 1000
+CLOCK_SPEED   = 500
 
 # SEED USED FOR DEBUGGING
 #np.random.seed(1234)
@@ -17,7 +19,10 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 pygame.display.set_caption("Fuksisimulaattori")
 clock = pygame.time.Clock()
+pygame.time.set_timer(pygame.USEREVENT, CLOCK_SPEED)
 font = pygame.font.SysFont("Arial" , 18 , bold = True)
+titlefont = pygame.font.SysFont("Arial" , 60 , bold = True)
+counter_font = pygame.font.SysFont("Arial" , 40 , bold = True)
 
 #------------
 # FUNCTIONS
@@ -27,13 +32,24 @@ def fps_counter():
     fps_t = font.render(fps , 1, pygame.Color("RED"))
     screen.blit(fps_t,(0,0))
 
+def draw_title(campus):
+    title = titlefont.render(campus.name , 1, pygame.Color("BLACK"))
+    screen.blit(title,(SCREEN_WIDTH//2 - titlefont.size(campus.name)[0]//2,10))
+
+def draw_fuksi_number(n_fuksi,total):
+    fcounter = counter_font.render(f"Fuksit luennolla: {n_fuksi}/{total}"  , 1, pygame.Color("BLACK"))
+    screen.blit(fcounter,(0,20))
+
+def draw_clock(text):
+    fcounter = counter_font.render(f"AIKA: {text}", 1, pygame.Color("BLACK"))
+    screen.blit(fcounter,(SCREEN_WIDTH//2 + 400,20))
 
 def initialize_simulation():
     campus = Kumpula()
     targets = campus.targets
     n_fuksi = 200
-    n_opiskelija = 20 
-    n_proffa = 20
+    n_opiskelija = 50 
+    n_proffa = 30
     people = []
 
     def get_spawn_pos(fuksi=True):
@@ -67,39 +83,58 @@ def initialize_simulation():
     for _ in range(n_proffa):
         people.append(Proffa(get_spawn_pos(fuksi=False),list(campus.targets[np.random.choice(len(campus.targets))])))
 
-    return campus, targets, people
+    return campus, targets, people, n_fuksi
 
 # ==============================#
 #      START OF  GAME LOOP      #
 # ==============================#
-campus,targets,people = initialize_simulation()
+campus,targets,people,total = initialize_simulation()
+n_goal = 0
+h = 8; m = 0
+clock_text = f"{h:02d}:{m:02d}"
 
 while True:
     
     for event in pygame.event.get():
+        if event.type == pygame.USEREVENT:
+            clock_text = f"{h:02d}:{m:02d}"
+            if m == 59: h = (h + 1) % 24 
+            m = (m + 1) % 60 
+            
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-    
+
     screen.fill(pygame.Color("darkslategrey"))
 
+    
+    highlight_index = []
     for i,person in enumerate(reversed(people.copy())):
         person.move(campus.rects)
         person.draw()
         if isinstance(person,Proffa):
             continue
         person.update(people)
-        for t in targets:
-            if person.check_collision(t,20) and list(t) == person.target:
+        for j,t in enumerate(targets):
+            if person.check_collision(t,20):# and list(t) == person.target:
+                if isinstance(person,Fuksi):
+                    n_goal += 1
                 del(people[len(people) - i - 1])
+                highlight_index.append(j)
                 break
+
 
     # NOTE: changing the order of loops below can change visual look.        
     for border in campus.rects:
         pygame.draw.rect(pygame.display.get_surface(),pygame.Color("BLACK"), border )     
-    for t in targets:
-        pygame.draw.circle(pygame.display.get_surface(), pygame.Color("RED"),t, 20)
+    for j,t in enumerate(targets):
+        color = pygame.Color("ORANGE") if j in highlight_index else pygame.Color("RED") 
+        size = 23 if j in highlight_index else 20
+        pygame.draw.circle(pygame.display.get_surface(), color,t, size)
 
     fps_counter()
+    draw_title(campus)
+    draw_fuksi_number(n_goal,total)
+    draw_clock(clock_text)
     pygame.display.update()
     clock.tick(60)

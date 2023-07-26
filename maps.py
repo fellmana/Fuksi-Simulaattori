@@ -31,9 +31,8 @@ class Kumpula:
                              (850,180,200,200),
                              (1000,580,200,200)]
         self.targets = [(390,300),(470,393),
-                        (560,630),(965,543),
-                        (1100,660)]
-        self.target_mapping = {"fuksi":[1,2,4], "opiskelija":[0,3]}
+                        (560,630),(1100,660)]
+        self.target_mapping = {"fuksi":[1,2,3], "opiskelija":[0]}
 
 class Areena:
     name = "AREENA"
