@@ -28,11 +28,12 @@ class Kumpula:
                     ]
         self.spawn_points = [(610,490),(955,495),(1200,500)]
         self.spawn_areas  = [(200,430,300,200),
-                             (850,180,200,200),
+                             (850,160,200,200),
                              (1000,580,200,200)]
         self.targets = [(390,300),(470,393),
                         (560,630),(1100,660)]
         self.target_mapping = {"fuksi":[1,2,3], "opiskelija":[0]}
+        self.special_rule = {"special_areas":[(800,100,300,280),(1030,350,50,100)],"special_targets":[(1200,390),(1030,800)]}
 
 class Areena:
     name = "AREENA"
@@ -47,3 +48,4 @@ class Areena:
         self.spawn_areas  = [(200,200,1000,500)]
         self.targets = [(300,300),(300,600),(1100,600),(1100,300)]
         self.target_mapping = {"fuksi":[0,1,2,3], "opiskelija":[0,1,2,3]}
+        self.special_rule = {"special_areas":[],"special_targets":[]}

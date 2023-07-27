@@ -45,7 +45,8 @@ class Person:
                     self.vel[1] *= -1
                 self.pos = previous
                 self.can_collide = False
-                self.collsion_cooldown = 5
+                if self.collsion_cooldown < 10:
+                    self.collsion_cooldown = 5
                 break
 
 
@@ -62,7 +63,7 @@ class Person:
             for p in people:
                 if self.check_collision(p.pos,p.radius):
                     self.can_collide = False
-                    self.collsion_cooldown = 220 - np.random.randint(10,60)
+                    self.collsion_cooldown = 150 - np.random.randint(10,60)
                     direction =  p.give_direction(self)
                     # check sin cos stuff
                     self.vel[0] = self.speed*np.cos(direction)
@@ -86,10 +87,23 @@ class Person:
 class Fuksi(Person):
     identity="Fuksi"
     speed = 1.5
-
-    def __init__(self, pos,target,vel=None,major="Fysiikka"):
+    def __init__(self, pos,target,vel=None,special_rule=None,major="Fysiikka"):
         super().__init__(pos,target,vel=vel)
         self.major = major
+        self.original_target = target
+        self.special_rule = special_rule
+
+    def move(self,rects):
+        if self.special_rule != None:
+            for i, area in enumerate(self.special_rule["special_areas"]):
+                if is_inside_rectangle(self.pos,area):
+                    self.target = self.special_rule["special_targets"][i]
+                    break
+            else:
+                self.target = self.original_target
+                
+        super().move(rects)
+    
 
     def give_direction(self,other):
         angle = get_angle(other.target,other.pos)
@@ -125,7 +139,7 @@ class Proffa(Person):
     
     def give_direction(self,other):
         """"""
-        angle = get_angle(other.target,other.pos)
+        angle = get_angle(other.target,other.pos) + 0.1*np.pi*np.random.rand()
         return angle 
         
 
@@ -133,15 +147,23 @@ class Opiskelija(Person):
     identity="Opiskelija"
     color="blue"
 
-    def __init__(self, pos,target,n,vel=None,major="Fysiikka"):
+    def __init__(self, pos,target,n,vel=None,special_rule=None,major="Fysiikka"):
         super().__init__(pos,target,vel=vel)
         self.major = major
-        self.target = target
+        self.original_target = target
+        self.special_rule = special_rule
         self.n = n
         self.radius = 10 + self.n//2
     
     def move(self,rects):
         if self.n <= 5:
+            if self.special_rule != None:
+                for i, area in enumerate(self.special_rule["special_areas"]):
+                    if is_inside_rectangle(self.pos,area):
+                        self.target = self.special_rule["special_targets"][i]
+                        break
+                else:
+                    self.target = self.original_target
             super().move(rects)
         else:
 

@@ -1,6 +1,7 @@
 import pygame
 from sys import exit
 from people import Fuksi,Proffa,Opiskelija,is_inside_rectangle
+from commandline_arguments import parse_args
 from maps import Kumpula,Areena
 import numpy as np
 
@@ -11,6 +12,8 @@ import numpy as np
 SCREEN_WIDTH  = 1440
 SCREEN_HEIGHT = 1000
 CLOCK_SPEED   = 500
+
+args = parse_args()
 
 # SEED USED FOR DEBUGGING
 #np.random.seed(1234)
@@ -37,19 +40,32 @@ def draw_title(campus):
     screen.blit(title,(SCREEN_WIDTH//2 - titlefont.size(campus.name)[0]//2,10))
 
 def draw_fuksi_number(n_fuksi,total):
-    fcounter = counter_font.render(f"Fuksit luennolla: {n_fuksi}/{total}"  , 1, pygame.Color("BLACK"))
-    screen.blit(fcounter,(0,20))
+    if n_fuksi == total:
+        fcounter = counter_font.render("Kaikki fuksit luennolla, JEE!!"  , 1, pygame.Color("RED"))
+        screen.blit(fcounter,(0,20)) 
+        fcounter = counter_font.render("Paina 'ENTER' aloittaaksesi uudelleen."  , 1, pygame.Color("RED"))
+        screen.blit(fcounter,(0,60)) 
+
+    else:
+        fcounter = counter_font.render(f"Fuksit luennolla: {n_fuksi}/{total}"  , 1, pygame.Color("BLACK"))
+        screen.blit(fcounter,(0,20))    
 
 def draw_clock(text):
     fcounter = counter_font.render(f"AIKA: {text}", 1, pygame.Color("BLACK"))
     screen.blit(fcounter,(SCREEN_WIDTH//2 + 400,20))
 
-def initialize_simulation():
-    campus = Kumpula()
+def initialize_simulation(args):
+
+    match args.map.lower():
+        case "kumpula":
+            campus = Kumpula()
+        case "areena":
+            campus = Areena()
+        
     targets = campus.targets
-    n_fuksi = 200
-    n_opiskelija = 50 
-    n_proffa = 30
+    n_fuksi = args.fuksi
+    n_opiskelija = args.opiskelija 
+    n_proffa = args.proffa
     people = []
 
     def get_spawn_pos(fuksi=True):
@@ -73,12 +89,15 @@ def initialize_simulation():
             return pos
         
     for _ in range(n_fuksi):
-        people.append(Fuksi(get_spawn_pos(),list(campus.targets[np.random.choice(campus.target_mapping["fuksi"])])))
+        people.append(Fuksi(get_spawn_pos()
+                            ,list(campus.targets[np.random.choice(campus.target_mapping["fuksi"])]),
+                            special_rule=campus.special_rule))
 
     for _ in range(n_opiskelija):
         people.append(Opiskelija(get_spawn_pos(fuksi=False),
                                  list(campus.targets[np.random.choice(campus.target_mapping["opiskelija"])]),
-                                 np.random.randint(1,8)))
+                                 np.random.randint(1,8),
+                                 special_rule=campus.special_rule))
     
     for _ in range(n_proffa):
         people.append(Proffa(get_spawn_pos(fuksi=False),list(campus.targets[np.random.choice(len(campus.targets))])))
@@ -88,7 +107,7 @@ def initialize_simulation():
 # ==============================#
 #      START OF  GAME LOOP      #
 # ==============================#
-campus,targets,people,total = initialize_simulation()
+campus,targets,people,total = initialize_simulation(args)
 n_goal = 0
 h = 8; m = 0
 clock_text = f"{h:02d}:{m:02d}"
@@ -97,13 +116,22 @@ while True:
     
     for event in pygame.event.get():
         if event.type == pygame.USEREVENT:
-            clock_text = f"{h:02d}:{m:02d}"
-            if m == 59: h = (h + 1) % 24 
-            m = (m + 1) % 60 
+            if n_goal != total:
+                clock_text = f"{h:02d}:{m:02d}"
+                if m == 59: h = (h + 1) % 24 
+                m = (m + 1) % 60 
             
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+            
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN and n_goal == total:
+
+                campus,targets,people,total = initialize_simulation(args)
+                n_goal = 0
+                h = 8; m = 0
+                
 
     screen.fill(pygame.Color("darkslategrey"))
 
@@ -131,6 +159,9 @@ while True:
         color = pygame.Color("ORANGE") if j in highlight_index else pygame.Color("RED") 
         size = 23 if j in highlight_index else 20
         pygame.draw.circle(pygame.display.get_surface(), color,t, size)
+
+    #for special in campus.special_rule["special_areas"]:
+    #    pygame.draw.rect(pygame.display.get_surface(),pygame.Color("GRAY"), special )
 
     fps_counter()
     draw_title(campus)
