@@ -15,17 +15,38 @@ CLOCK_SPEED   = 500
 
 args = parse_args()
 
-# SEED USED FOR DEBUGGING
-#np.random.seed(1234)
+if args.debug:
+    np.random.seed(1234)
+
+# Dictionary containing all text for easy language options.
+text_dict = {"fin":{
+    "caption":"Fuksisimulaattori",
+    "all_at_goal":["Kaikki fuksit luennolla, JEE!!","Paina 'ENTER' aloittaaksesi uudelleen."],
+    "fcounter_text":"Fuksit luennolla",
+    "clock_text":"AIKA"
+    },
+    "eng":{
+    "caption":"Freshmansimulator",
+    "all_at_goal":["All freshmen at lectures!!","Press 'ENTER' to restart."],
+    "fcounter_text":"Freshmen at lectures",
+    "clock_text":"TIME"
+    },
+    "swe":{
+    "caption":"gulis-simulator",
+    "all_at_goal":["Alla gulisar på föreläsning!!","Tryck 'ENTER',för att starta om."],
+    "fcounter_text":"gulisar på föreläsning",
+    "clock_text":"TID"
+    }    
+}
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
-pygame.display.set_caption("Fuksisimulaattori")
+pygame.display.set_caption(text_dict[args.language]["caption"])
 clock = pygame.time.Clock()
 pygame.time.set_timer(pygame.USEREVENT, CLOCK_SPEED)
 font = pygame.font.SysFont("Arial" , 18 , bold = True)
 titlefont = pygame.font.SysFont("Arial" , 60 , bold = True)
-counter_font = pygame.font.SysFont("Arial" , 40 , bold = True)
+counter_font = pygame.font.SysFont("Arial" , 38 , bold = True)
 
 #------------
 # FUNCTIONS
@@ -36,22 +57,22 @@ def fps_counter():
     screen.blit(fps_t,(0,0))
 
 def draw_title(campus):
-    title = titlefont.render(campus.name , 1, pygame.Color("BLACK"))
-    screen.blit(title,(SCREEN_WIDTH//2 - titlefont.size(campus.name)[0]//2,10))
+    title = titlefont.render(campus.name[args.language] , 1, pygame.Color("BLACK"))
+    screen.blit(title,(SCREEN_WIDTH//2 - titlefont.size(campus.name[args.language])[0]//2,10))
 
 def draw_fuksi_number(n_fuksi,total):
     if n_fuksi == total:
-        fcounter = counter_font.render("Kaikki fuksit luennolla, JEE!!"  , 1, pygame.Color("RED"))
+        fcounter = counter_font.render(text_dict[args.language]["all_at_goal"][0] , 1, pygame.Color("RED"))
         screen.blit(fcounter,(0,20)) 
-        fcounter = counter_font.render("Paina 'ENTER' aloittaaksesi uudelleen."  , 1, pygame.Color("RED"))
+        fcounter = counter_font.render(text_dict[args.language]["all_at_goal"][1] , 1, pygame.Color("RED"))
         screen.blit(fcounter,(0,60)) 
 
     else:
-        fcounter = counter_font.render(f"Fuksit luennolla: {n_fuksi}/{total}"  , 1, pygame.Color("BLACK"))
+        fcounter = counter_font.render(f"{text_dict[args.language]['fcounter_text']}: {n_fuksi}/{total}"  , 1, pygame.Color("BLACK"))
         screen.blit(fcounter,(0,20))    
 
 def draw_clock(text):
-    fcounter = counter_font.render(f"AIKA: {text}", 1, pygame.Color("BLACK"))
+    fcounter = counter_font.render(f"{text_dict[args.language]['clock_text']}: {text}", 1, pygame.Color("BLACK"))
     screen.blit(fcounter,(SCREEN_WIDTH//2 + 400,20))
 
 def initialize_simulation(args):
@@ -159,9 +180,10 @@ while True:
         color = pygame.Color("ORANGE") if j in highlight_index else pygame.Color("RED") 
         size = 23 if j in highlight_index else 20
         pygame.draw.circle(pygame.display.get_surface(), color,t, size)
-
-    #for special in campus.special_rule["special_areas"]:
-    #    pygame.draw.rect(pygame.display.get_surface(),pygame.Color("GRAY"), special )
+    
+    if args.debug:
+        for special in campus.special_rule["special_areas"]:
+            pygame.draw.rect(pygame.display.get_surface(),pygame.Color("GRAY"), special,1 )
 
     fps_counter()
     draw_title(campus)
