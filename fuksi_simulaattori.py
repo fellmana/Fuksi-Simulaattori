@@ -162,7 +162,6 @@ while True:
         person.draw()
         if isinstance(person,Proffa):
             continue
-        ndelete = 0
         person.update(people)
         for j,t in enumerate(targets):
             if person.check_collision(t,20):
