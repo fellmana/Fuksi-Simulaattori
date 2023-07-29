@@ -229,7 +229,7 @@ class Proffa(Person):
         str representation of the type of character
     """
     color = "gray"
-    identity = "proffa"
+    identity = "Proffa"
     speed = 0.5
     radius = 15
 
