@@ -32,13 +32,15 @@ Proffat liikkuvat hitaasti käytävillä ilman varsinaista tavoitetta. He käysk
 ### Ohjelmant ajaminen (Running program)
 
 ```bash 
-python fuksi-simulaattori.py
+python fuksi_simulaattori.py
 ```
 
 ### komentorivi argumentit (Commandline arguments)
 
 ```bash 
-usage: fuksi-simulaattori.py [-h] [-m {kumpula,areena}] [-f FUKSI] [-o OPISKELIJA] [-p PROFFA]
+usage: fuksi_simulaattori.py [-h] [-m {kumpula,areena}] [-f FUKSI]
+                             [-o OPISKELIJA] [-p PROFFA] [-l {fin,eng,swe}]
+                             [--debug]
 
 options:
   -h, --help            show this help message and exit
@@ -50,6 +52,9 @@ options:
                         number of opiskelija
   -p PROFFA, --proffa PROFFA
                         number of proffa
+  -l {fin,eng,swe}, --language {fin,eng,swe}
+                        Define language options
+  --debug               Enable debugging options
 ```
 
 ## Kort svensk beskrivning 

@@ -19,7 +19,8 @@ if args.debug:
     np.random.seed(1234)
 
 # Dictionary containing all text for easy language options.
-text_dict = {"fin":{
+text_dict = {
+    "fin":{
     "caption":"Fuksisimulaattori",
     "all_at_goal":["Kaikki fuksit luennolla, JEE!!","Paina 'ENTER' aloittaaksesi uudelleen."],
     "fcounter_text":"Fuksit luennolla",
@@ -46,7 +47,7 @@ clock = pygame.time.Clock()
 pygame.time.set_timer(pygame.USEREVENT, CLOCK_SPEED)
 font = pygame.font.SysFont("Arial" , 18 , bold = True)
 titlefont = pygame.font.SysFont("Arial" , 60 , bold = True)
-counter_font = pygame.font.SysFont("Arial" , 38 , bold = True)
+counter_font = pygame.font.SysFont("Arial" , 36 , bold = True)
 
 #------------
 # FUNCTIONS
