@@ -152,29 +152,27 @@ while True:
 
                 campus,targets,people,total = initialize_simulation(args)
                 n_goal = 0
-                h = 8; m = 0
-                
+                h = 8; m = 0               
 
     screen.fill(pygame.Color("darkslategrey"))
 
-    
     highlight_index = []
-    for i,person in enumerate(reversed(people.copy())):
+    for person in reversed(people.copy()):
         person.move(campus.rects)
         person.draw()
         if isinstance(person,Proffa):
             continue
+        ndelete = 0
         person.update(people)
         for j,t in enumerate(targets):
-            if person.check_collision(t,20):# and list(t) == person.target:
+            if person.check_collision(t,20):
                 if isinstance(person,Fuksi):
                     n_goal += 1
-                del(people[len(people) - i - 1])
+                people.remove(person)
                 highlight_index.append(j)
                 break
 
-
-    # NOTE: changing the order of loops below can change visual look.        
+    # NOTE: changing the order of loops below can be used to change visual look.        
     for border in campus.rects:
         pygame.draw.rect(pygame.display.get_surface(),pygame.Color("BLACK"), border )     
     for j,t in enumerate(targets):
@@ -185,6 +183,8 @@ while True:
     if args.debug:
         for special in campus.special_rule["special_areas"]:
             pygame.draw.rect(pygame.display.get_surface(),pygame.Color("GRAY"), special,1 )
+        for st in campus.special_rule["special_targets"]:
+            pygame.draw.circle(pygame.display.get_surface(), pygame.Color("GRAY"),st, 10,1)
 
     fps_counter()
     draw_title(campus)

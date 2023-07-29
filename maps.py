@@ -68,7 +68,7 @@ class Kumpula:
         self.targets = [(390,300),(470,393),
                         (560,630),(1100,660)]
         self.target_mapping = {"fuksi":[1,2,3], "opiskelija":[0]}
-        self.special_rule = {"special_areas":[(800,100,300,280),(1030,380,50,80)],"special_targets":[(1200,390),(1030,800)]}
+        self.special_rule = {"special_areas":[(800,100,300,280),(1030,380,50,80)],"special_targets":[(1100,390),(1050,800)]}
 
 class Areena:
     """ Simple Rectangular Areena map 
