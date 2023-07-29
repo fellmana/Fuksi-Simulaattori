@@ -3,16 +3,23 @@ import pygame
 import numpy as np
 import math
 
+#------------------
+# HELPER FUNCTIONS
+#------------------
 def get_angle(target,pos):
     """Gets angle between targets and a given position in radians"""
-    return np.arctan2(target[1]-pos[1],target[0]-pos[0])
+    return np.arctan2(target[1] - pos[1], target[0] - pos[0])
 
 def is_inside_rectangle(pos,rectangle):
     """Check if given positions is inside defined rectange (x,y,width,height)"""
-    if rectangle[0] <= pos[0] <=  rectangle[0] + rectangle[2]:
-        if rectangle[1] <= pos[1] <=  rectangle[1] + rectangle[3]:
+    if rectangle[0] <= pos[0] <= rectangle[0] + rectangle[2]:
+        if rectangle[1] <= pos[1] <= rectangle[1] + rectangle[3]:
             return True
     return False
+
+#------------
+# Characters
+#------------
 
 class Person:
     """Base class for character definitions
@@ -67,9 +74,9 @@ class Person:
         self.pos[1] += self.vel[1]
         for rectangle in rects:   
             if is_inside_rectangle(self.pos,rectangle):
-                if rectangle[0] >=  previous[0]  or previous[0] >= rectangle[0] + rectangle[2]:
+                if rectangle[0] >=  previous[0] or previous[0] >= rectangle[0] + rectangle[2]:
                     self.vel[0] *= -1
-                if rectangle[1] >=  previous[1]  or previous[1] >= rectangle[1] + rectangle[3]:
+                if rectangle[1] >=  previous[1] or previous[1] >= rectangle[1] + rectangle[3]:
                     self.vel[1] *= -1
                 self.pos = previous
                 self.can_collide = False
@@ -94,7 +101,7 @@ class Person:
         # NOTE: doing this using numpy functions has a lot of
         # overhead with small arrays. switched from:
         # np.linalg.norm -> np.sqrt -> math.sqrt (best perfomance) 
-        diff = [self.pos[0] - point[0],self.pos[1] - point[1]]
+        diff = [self.pos[0] - point[0], self.pos[1] - point[1]]
         return 0 < math.sqrt((diff[0])**2 + (diff[1])**2) < self.radius + radius
 
 
@@ -126,7 +133,7 @@ class Person:
 
     def draw(self):
         """Draw character on screen"""
-        pygame.draw.circle(pygame.display.get_surface(), pygame.Color(self.color),self.pos, self.radius)
+        pygame.draw.circle(pygame.display.get_surface(),pygame.Color(self.color),self.pos,self.radius)
 
 
 
@@ -149,9 +156,9 @@ class Fuksi(Person):
         differently in simulation. Mainly used for areas where characters
         can get stuck. 
     """
-    identity="Fuksi"
+    identity = "Fuksi"
     speed = 1.5
-    def __init__(self, pos,target,vel=None,special_rule=None,major="Fysiikka"):
+    def __init__(self,pos,target,vel=None,special_rule=None,major="Fysiikka"):
         super().__init__(pos,target,vel=vel)
         self.major = major
         self.original_target = target
@@ -175,8 +182,7 @@ class Fuksi(Person):
                     self.target = self.special_rule["special_targets"][i]
                     break
             else:
-                self.target = self.original_target
-                
+                self.target = self.original_target      
         super().move(rects)
     
 
@@ -223,11 +229,11 @@ class Proffa(Person):
         str representation of the type of character
     """
     color = "gray"
-    identity="proffa"
+    identity = "proffa"
     speed = 0.5
     radius = 15
 
-    def __init__(self, pos,target,vel=None):
+    def __init__(self,pos,target,vel=None):
         """ Initialization
 
         Notes:
@@ -288,10 +294,10 @@ class Opiskelija(Person):
     n: int 
         Academic year (1..n) used to determine behaviour.
     """
-    identity="Opiskelija"
-    color="blue"
+    identity = "Opiskelija"
+    color = "blue"
 
-    def __init__(self, pos,target,n,vel=None,special_rule=None,major="Fysiikka"):
+    def __init__(self,pos,target,n,vel=None,special_rule=None,major="Fysiikka"):
         super().__init__(pos,target,vel=vel)
         self.major = major
         self.original_target = target

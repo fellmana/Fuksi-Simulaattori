@@ -1,4 +1,36 @@
+"""Module containing map information
+
+Notes:
+    In order to implement new map, create new class with the 
+    same parameters as the other maps, add it to commandline options
+    and in main file (fuksi_simulaattori.py) add a new case in the 
+    match statement in the function initialize_simulation().
+"""
+
 class Kumpula:
+    """ Map of Kumpula 
+
+    Parameters:
+
+    name: dict
+        Dictionary containing name of map in implemented languages
+    rects: list
+        Rectangles defining the borders of the map
+    spawn_points: list
+        x,y coordinates of spawn points of Fuksi(People) 
+    spawn_areas: list
+        Rectangles defining spawn areas of People
+    targets: list
+        x,y points defining targets of map, these are drawn on screen
+    target_mapping: dict
+        Dictionary containing spawnarea assigment between different types
+        of characters. TODO(?): extend the functionality of this.
+    special_rule: dict
+        Dictionary containing list of areas (rectangles) and corresponding 
+        special target coordinates. Allow for certain areas to be treated
+        differently in simulation. Mainly used for areas where characters
+        can get stuck.
+    """
     name = {"fin":"KUMPULA",
             "eng":"KUMPULA",
             "swe":"GUMTÄKT"}
@@ -39,6 +71,29 @@ class Kumpula:
         self.special_rule = {"special_areas":[(800,100,300,280),(1030,380,50,80)],"special_targets":[(1200,390),(1030,800)]}
 
 class Areena:
+    """ Simple Rectangular Areena map 
+
+    Parameters:
+
+    name: dict
+        Dictionary containing name of map in implemented languages
+    rects: list
+        Rectangles defining the borders of the map
+    spawn_points: list
+        x,y coordinates of spawn points of Fuksi(People) 
+    spawn_areas: list
+        Rectangles defining spawn areas of People
+    targets: list
+        x,y points defining targets of map, these are drawn on screen
+    target_mapping: dict
+        Dictionary containing spawnarea assigment between different types
+        of characters. TODO(?): extend the functionality of this.
+    special_rule: dict
+        Dictionary containing list of areas (rectangles) and corresponding 
+        special target coordinates. Allow for certain areas to be treated
+        differently in simulation. Mainly used for areas where characters
+        can get stuck.
+    """
     name = {"fin":"AREENA",
             "eng":"AREENA",
             "swe":"AREENA"}

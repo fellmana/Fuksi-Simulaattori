@@ -1,4 +1,4 @@
-"""Mode containing commandline argument parsing options"""
+"""Module containing commandline argument parsing options"""
 import argparse
 
 def parse_args():
@@ -17,5 +17,4 @@ def parse_args():
                         help="Enable debugging options")
     args = parser.parse_args()
     
-
     return args
